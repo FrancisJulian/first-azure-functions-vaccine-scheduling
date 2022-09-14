@@ -1,7 +1,7 @@
 [github.com/francisjulian/first-azure-functions-vaccine-scheduling](github.com/francisjulian/first-azure-function-app-vaccine-scheduling)
   
 
-#  Vaccine scheduling: My first Azure Functions app to solve a simple problem with huge crush of users
+#  Vaccine scheduling: My first Azure Functions app to solve a simple problem with a huge burst of users
 
 ## Motivation
 
@@ -11,7 +11,7 @@ In this example, focus on a simple app where a 100,000 users appear within a min
 
 ## Vaccine scheduling app
 
-In the attached Word document, I wrote about the vaccine scheduling apps in the US where every major pharmacy and medical systems
+In the included Word document, I wrote about the vaccine scheduling apps in the US where every major pharmacy and medical systems
 apps were not built correctly for a huge push of people trying to schedule an appointment. 
 
 In one case, someone was tweeting
@@ -24,22 +24,24 @@ repeatedly.
 With this motivation, the goal of this project is to write my first Azure Functions.  Functions promise to be able to handle 
 a big rush of people all doing a simple task quickly. 
 
-I found it easier to first work within the Azure Portal to build and example and then to build locally. 
+I found it easier to first work within the Azure Portal to build an example and then to build locally. 
 
 ## Solution
 
-1. An Azure Function that takes an http Post that immediately puts on the **Azure Storage Queue** and then returns 
+1. An Azure Function that takes an http Post 
 ``` 
 {
   "email": "youremail@company.com", -- proxy for ID and to allow follow up
   "age": 96                         -- proxy for health priority
 }
 ```
-> The goal of using the queue is to allow large number of users so we always get back to the person even if delayed.  The initial function will be as short as possible so that as many as possible of the huge crush of users will at least be recorded in our database.  All the other steps can be done more slowly.
+that immediately puts on the **Azure Storage Queue** and then the function returns.  
 
-> Even with serverless, of course over some crush of users will be too many.  If this initial function is not able to keep up, Azure Functions puts rejected requests in a -poison queue.
+> The goal of using the queue is to allow large number of users, so we very often get back to the person even if the main processing is delayed.  The initial function will be as short as possible so that as many as possible of the huge crush of users will at least be recorded in our database.  All the other steps can be done more slowly.
 
-2. A second Azure function asynchronously triggged from the queue and writes to a **Cosmo Database** to generate unique requests.
+> Even with serverless, of course over some crushes of users will be too many.  If this initial function is not able to keep up, Azure Functions puts rejected requests in a -poison queue.
+
+2. A second Azure function is asynchronously triggged from the queue and writes to a **Cosmo Database** to generate unique requests.
 
 3. A third function would be asynchronously triggered from Cosmo to do actual work within a managed SQL database to have the actual ACID guarantees that we need and not available in Cosmo DB. (*Not implemented*)  This function can be slow and delayed in time.
 
@@ -115,14 +117,14 @@ For simplicity, I also installed all other extensions that have the name Azure a
 4. Make sure you have a GitHub account as Microsoft owns GitHub and plays best with this version control.
 5. Install additional executables  
   Azure Storage Explorer version 1.25.1  
-  Azure Functions Core Tools 4.0.4736 *x64
+  Azure Functions Core Tools 4.0.4736 *x64  
   Azure Cosmos DB Emulator  
 
 The web address for the local Cosmo DB is:
 https://localhost:8081/_explorer/index.html
 
 6. In the terminal of this project install packages by running
-     `npm install`
+     `npm install`.
 7. Set up your local.settings.json (that is not checked into version control):  
  
 ```
@@ -136,11 +138,11 @@ https://localhost:8081/_explorer/index.html
 }
 ```
 Determine YOUR_LOCAL_PRIMARY_KEY for CosmoDB by going to: https://localhost:8081/_explorer/index.html
-  and selecting Quickstart and looking at Primary Key 
+  and selecting Quickstart and looking at Primary Key. 
   
-> The AzureWebJobsStorage allows the Storage Queue to work locally.
+> The AzureWebJobsStorage allows the Storage Queue to work locally.  The MyCosmoDB key allows the CosmoDB to work locally.
 
-8. Start Azurite by brining up the pallete Control-Shift-P  
+8. Start Azurite by brining up the pallete Control-Shift-P,  
    Azurite: Start  
 
 > Azurite deprecates Azure Storage Emulator running locally.  
